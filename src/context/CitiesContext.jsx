@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
 
-const BASE_URL = 'http://localhost:9000'
+const BASE_URL = 'http://localhost:3000/api'
 const CitiesContext = createContext();
 
 const inititalState = {
@@ -29,7 +29,7 @@ function reducer(state, action) {
             }
         case 'city/deleted':
             return {
-                ...state, isLoading: false, cities: state.cities.filter(city => city.id !== action.payload), currentCity: {}
+                ...state, isLoading: false, cities: state.cities.filter(city => city._id !== action.payload), currentCity: {}
             }
         case 'rejected':
             return {
@@ -65,7 +65,6 @@ function CitiesProvider({ children }) {
         try {
             const res = await fetch(`${BASE_URL}/cities/${id}`);
             const data = await res.json();
-
             dispatch({ type: "city/loaded", payload: data })
         } catch {
             dispatch({ type: 'rejected', payload: "there was an error getting city.." })
@@ -91,7 +90,7 @@ function CitiesProvider({ children }) {
     async function deleteCity(id) {
         dispatch({ type: 'loading' })
         try {
-            await fetch(`${BASE_URL}/cities/${id}`, {
+            await fetch(`${BASE_URL}/delete/${id}`, {
                 method: 'DELETE',
             });
 
